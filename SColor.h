@@ -2,6 +2,7 @@
 
 class SColor {
 public:
+	static const int DEFAULT=-1;
 	static const int BLACK	= 0;
 	static const int RED	= 1;
 	static const int GREEN	= 2;
@@ -75,10 +76,10 @@ public:
 		os<<"\e[?25h";
 	}
 
-	SColor(int fg=-30,int bg=-40,int style=0)
+	SColor(int fg=DEFAULT,int bg=DEFAULT,int style=0)
 	{
-		this->foreground=fg+30;
-		this->background=bg+40;
+		this->foreground=(fg==DEFAULT)?0:fg+30;
+		this->background=(bg==DEFAULT)?0:bg+40;
 		this->style=style;
 	}
 
@@ -160,15 +161,15 @@ public:
 		this->style=0;
 	}
 
-	SColor& setFg(int fg)
+	SColor& setFg(int fg=DEFAULT)
 	{
-		this->foreground=fg+30;
+		this->foreground=(fg==DEFAULT)?0:fg+30;
 		return *this;
 	}
 
-	SColor& setBg(int bg)
+	SColor& setBg(int bg=DEFAULT)
 	{
-		this->background=bg+40;
+		this->background=(bg==DEFAULT)?0:bg+40;
 		return *this;
 	}
 
@@ -180,11 +181,13 @@ public:
 
 	int getFg()
 	{
+		if(foreground==DEFAULT)return DEFAULT;
 		return foreground-30;
 	}
 
 	int getBg()
 	{
+		if(background==DEFAULT)return DEFAULT;
 		return background-40;
 	}
 
