@@ -1,6 +1,9 @@
 #include <iostream>
 
 class SColor {
+private:
+	static bool b_allEnabled;
+	bool b_enabled=true;
 public:
 	static const int DEFAULT=-1;
 	static const int BLACK	= 0;
@@ -21,59 +24,79 @@ public:
 	static const int BLANK			= 1<<8;
 	static const int STRIKETHROUGH	= 1<<9;
 
+	static void setAllEnabled(bool enabled=true)
+	{
+		b_allEnabled=enabled;
+	}
+
+	static bool allEnabled()
+	{
+		return b_allEnabled;
+	}
+
+	void setEnabled(bool enabled=true)
+	{
+		b_enabled=enabled;
+	}
+
+	bool enabled()const
+	{
+		return b_enabled;
+	}
+
 	static void moveUP(int n=1,std::ostream& os=std::cout)
 	{
-		os<<"\e["<<n<<"A";
+		if(allEnabled())os<<"\e["<<n<<"A";
 	}
 
 	static void moveDOWN(int n=1,std::ostream& os=std::cout)
 	{
-		os<<"\e["<<n<<"B";
+		if(allEnabled())os<<"\e["<<n<<"B";
 	}
 
 	static void moveRIGHT(int n=1,std::ostream& os=std::cout)
 	{
-		os<<"\e["<<n<<"C";
+		if(allEnabled())os<<"\e["<<n<<"C";
 	}
 
 	static void moveLEFT(int n=1,std::ostream& os=std::cout)
 	{
-		os<<"\e["<<n<<"D";
+		if(allEnabled())os<<"\e["<<n<<"D";
 	}
 
 	static void clean(std::ostream& os=std::cout)
 	{
-		os<<"\e[2J\e[0;0H";
+		if(allEnabled())os<<"\e[2J\e[0;0H";
 	}
 
 	static void cleanLine(std::ostream& os=std::cout)
 	{
-		os<<"\e[K";
+		if(allEnabled())os<<"\e[K";
 	}
 
 	static void setCursor(int x,int y,std::ostream& os=std::cout)
 	{
-		os<<"\e["<<x<<";"<<y<<"H";
+		if(allEnabled())os<<"\e["<<x<<";"<<y<<"H";
 	}
 
 	static void saveCursor(std::ostream& os=std::cout)
 	{
-		os<<"\e[s";
+		if(allEnabled())os<<"\e[s";
 	}
 
 	static void unsetCursor(std::ostream& os=std::cout)
 	{
-		os<<"\e[u";
+		if(allEnabled())os<<"\e[u";
 	}
 
 	static void hideCursor(std::ostream& os=std::cout)
 	{
-		os<<"\e[?25l";
+		if(allEnabled())os<<"\e[?25l";
 	}
 
 	static void echoCursor(std::ostream& os=std::cout)
 	{
-		os<<"\e[?25h";
+		if(allEnabled())os<<"\e[?25h";
 	}
 
 	SColor(int fg=DEFAULT,int bg=DEFAULT,int style=0)
@@ -85,10 +108,13 @@ public:
 
 	friend std::ostream& operator<<(std::ostream& os,const SColor& sColor)
 	{
-		os<<"\e["<<sColor.foreground;
-		if(sColor.background)os<<';'<<sColor.background;
-		for(int i=1;i<=9;i++)os<<';'<<((sColor.style&(1<<i))?i:i+20);
-		os<<"m";
+		if(SColor::allEnabled()&&sColor.enabled())
+		{
+			os<<"\e["<<sColor.foreground;
+			if(sColor.background)os<<';'<<sColor.background;
+			for(int i=1;i<=9;i++)os<<';'<<((sColor.style&(1<<i))?i:i+20);
+			os<<"m";
+		}
 		return os;
 	}
 
@@ -179,19 +205,19 @@ public:
 		return *this;
 	}
 
-	int getFg()
+	int getFg()const
 	{
 		if(foreground==DEFAULT)return DEFAULT;
 		return foreground-30;
 	}
 
-	int getBg()
+	int getBg()const
 	{
 		if(background==DEFAULT)return DEFAULT;
 		return background-40;
 	}
 
-	int getStyle()
+	int getStyle()const
 	{
 		return style;
 	}
@@ -201,3 +227,6 @@ private:
 	int background;
 	int style;
 };
+
+bool SColor::b_allEnabled=true;
+
