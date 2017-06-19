@@ -18,7 +18,7 @@ int main()
 		int x=i,y=j;
 		while(x>maxx)x=abs(2*maxx-x);
 		while(y>maxy)y=abs(2*maxy-y);
-		SColor::clean();
+		SColor::clear();
 		SColor::setCursor(x,y*2);
 		cout<<ac<<"test"<<defaultColor<<endl;
 		ac^=SColor::INVERT;
