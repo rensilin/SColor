@@ -44,6 +44,11 @@ public:
 		return b_enabled;
 	}
 
+	static void move(int x,int y,std::ostream& os=std::cout)
+	{
+		if(allEnabled())os<<"\e["<<x-1<<";"<<y-1<<"H";
+	}
+
 	static void moveUP(int n=1,std::ostream& os=std::cout)
 	{
 		if(allEnabled())os<<"\e["<<n<<"A";
@@ -64,12 +69,22 @@ public:
 		if(allEnabled())os<<"\e["<<n<<"D";
 	}
 
-	static void clean(std::ostream& os=std::cout)
+	static void clear(std::ostream& os=std::cout)
+	{
+		if(allEnabled())os<<"\e[2J\e[1;1H";
+	}
+
+	static void clearLine(std::ostream& os=std::cout)
+	{
+		if(allEnabled())os<<"\e[K";
+	}
+
+	static void clean(std::ostream& os=std::cout)//change name to clear
 	{
 		if(allEnabled())os<<"\e[2J\e[0;0H";
 	}
 
-	static void cleanLine(std::ostream& os=std::cout)
+	static void cleanLine(std::ostream& os=std::cout)//change name to clearLine
 	{
 		if(allEnabled())os<<"\e[K";
 	}
